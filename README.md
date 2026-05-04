@@ -4,7 +4,7 @@ A personal training, nutrition, and health tracker built for one user — me. De
 
 It's a single-page web app, fully offline-capable, with all data stored locally on the device. No accounts. No servers. No analytics.
 
-🔗 **Live app:** [open here](https://gavinlohnes.github.io/PROJECT-BEYOND-445/)
+🔗 **Live app:** [open here](https://gavinlohnes.github.io/Log445/)
 
 ---
 
