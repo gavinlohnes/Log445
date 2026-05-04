@@ -2,7 +2,7 @@
  * Caches the shell + Chart.js + fonts so the app runs offline.
  * Bump VERSION to force a refresh after you update the HTML.
  */
-const VERSION = 'beyond-v2';
+const VERSION = 'beyond-v3';
 const CORE = [
   './',
   './index.html',
@@ -18,7 +18,7 @@ const CORE = [
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(VERSION).then(c => c.addAll(CORE).catch(() => {
-      /* one of the third-party URLs failed — install anyway, runtime cache will fill in */
+      /* one of the third-party URLs failed — install anyway */
     }))
   );
   self.skipWaiting();
@@ -34,22 +34,17 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Only handle GET; let everything else pass through
   if (e.request.method !== 'GET') return;
   e.respondWith(
     caches.match(e.request).then(cached => {
       if (cached) return cached;
       return fetch(e.request).then(resp => {
-        // Runtime cache for fonts and CDN assets that load lazily
-        if (resp.ok && (e.request.url.startsWith('https://fonts.') ||
-                        e.request.url.startsWith('https://cdnjs.'))) {
+        if (resp.ok && (e.request.url.startsWith('https://fonts.') || 
+                        e.request.url.includes('chart.umd.min.js'))) {
           const clone = resp.clone();
           caches.open(VERSION).then(c => c.put(e.request, clone));
         }
         return resp;
-      }).catch(() => {
-        // Offline fallback for HTML navigations
-        if (e.request.mode === 'navigate') return caches.match('./index.html');
       });
     })
   );
